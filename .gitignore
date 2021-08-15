@@ -54,3 +54,4 @@ dkms.conf
 tags
 cmake-build-debug/
 .idea/*
+main
