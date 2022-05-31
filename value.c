@@ -21,9 +21,23 @@ void writeValueArray(ValueArray *array, Value value) {
   array->count++;
 }
 
+Value *getValue(ValueArray *array, int index) {
+  if (index > array->capacity) {
+    return NULL;
+  }
+  return &array->values[index];
+}
+
 void freeValueArray(ValueArray *array) {
   FREE_ARRAY(Value, array->values, array->capacity);
   initValueArray(array);
+}
+
+void setValue(ValueArray *array, int index, Value value) {
+  if (index > array->capacity) {
+    return;
+  }
+  array->values[index] = value;
 }
 
 void printValue(Value value) { printf("%g", value); }

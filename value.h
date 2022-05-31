@@ -13,6 +13,8 @@ typedef struct {
 
 void initValueArray(ValueArray *array);
 void writeValueArray(ValueArray *array, Value value);
+Value* getValue(ValueArray *array, int index);
+void setValue(ValueArray *array, int index, Value value);
 void freeValueArray(ValueArray *array);
 void printValue(Value value);
 
