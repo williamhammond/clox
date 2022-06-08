@@ -190,6 +190,7 @@ static TokenType identifierType() {
     }
     return TOKEN_IDENTIFIER;
   }
+}
 
   static Token identifier() {
     while (isAlpha(peek()) || isDigit(peek())) {
