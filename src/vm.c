@@ -3,6 +3,7 @@
 #include "debug.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include "compiler.h"
 
 VM vm;
 
