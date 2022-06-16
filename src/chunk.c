@@ -25,10 +25,10 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
   }
 
   if (line > chunk->lines.count || chunk->lines.count == 0) {
-    writeValueArray(&chunk->lines, 0);
+    writeValueArray(&chunk->lines, NUMBER_VAL(0));
   }
   Value *value = getValue(&chunk->lines, line - 1);
-  setValue(&chunk->lines, line - 1, *value + 1);
+  setValue(&chunk->lines, line - 1, NUMBER_VAL(AS_NUMBER(*value) + 1));
 
   chunk->code[chunk->count] = byte;
   chunk->count++;
@@ -50,7 +50,7 @@ int getLine(Chunk *chunk, int offset) {
 
   int size = 0;
   for (int line = 0; line < chunk->lines.count; line++) {
-    double count = chunk->lines.values[line];
+    double count = AS_NUMBER(chunk->lines.values[line]);
     for (int i = size; i < size + count; i++) {
       lines[i] = line + 1;
     }
