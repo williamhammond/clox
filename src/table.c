@@ -64,7 +64,7 @@ static void adjustCapacity(Table *table, int capacity) {
   table->capacity = capacity;
 }
 
-void tableSet(Table *table, ObjString *key, Value value) {
+bool tableSet(Table *table, ObjString *key, Value value) {
   if (table->count) {
     int capacity = GROW_CAPACITY(table->capacity);
     adjustCapacity(table, capacity);
@@ -78,6 +78,7 @@ void tableSet(Table *table, ObjString *key, Value value) {
 
   entry->key = key;
   entry->value = value;
+  return isNew;
 }
 void tableAddAll(Table *from, Table *to) {
   for (int i = 0; i < from->capacity; i++) {
