@@ -62,7 +62,7 @@ static void errorAt(Token *token, const char *message) {
     fprintf(stderr, " at end");
   } else if (token->type == TOKEN_ERROR) {
   } else {
-    fprintf(stderr, " at '%.*s'", message);
+    fprintf(stderr, " at '%.*s'", token->length, token->start);
   }
   fprintf(stderr, ": %s\n", message);
   parser.hadError = true;
@@ -172,7 +172,9 @@ static void defineVariable(uint8_t global) {
   emitBytes(OP_DEFINE_GLOBAL, global);
 }
 
-static ParseRule *getRule(TokenType type) { return &rules[type]; }
+static ParseRule *getRule(TokenType type) {
+  return &rules[type];
+}
 
 static void expression() { parsePrecedence(PREC_ASSIGNMENT); }
 
@@ -402,9 +404,6 @@ bool compile(const char *source, Chunk *chunk) {
   parser.panicMode = false;
 
   advance();
-  expression();
-  consume(TOKEN_EOF, "Expected end of expression.");
-
   while (!match(TOKEN_EOF)) {
     declaration();
   }
