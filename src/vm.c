@@ -95,7 +95,7 @@ static bool call(ObjFunction *function, int argCount) {
   return true;
 }
 
-static bool callValue(value callee, int argCount) {
+static bool callValue(Value callee, int argCount) {
   if (IS_OBJ(callee)) {
     switch (OBJ_TYPE(callee)) {
     case OBJ_NATIVE: {
