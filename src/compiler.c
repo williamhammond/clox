@@ -8,6 +8,7 @@
 
 #ifdef DEBUG_PRINT_CODE
 #include "debug.h"
+#include "memory.h"
 #endif
 
 typedef struct {
@@ -52,7 +53,7 @@ typedef struct {
 
 typedef enum { TYPE_FUNCTION, TYPE_SCRIPT } FunctionType;
 
-typedef struct {
+typedef struct Compiler {
   struct Compiler *enclosing;
   ObjFunction *function;
   FunctionType type;
@@ -309,7 +310,7 @@ static int resolveUpvalue(Compiler *compiler, Token *name) {
   int local = resolveLocal(compiler->enclosing, name);
   if (local != -1) {
     compiler->enclosing->locals[local].isCaptured = true;
-    return addUpvalue(compile, (uint8_t)local, true);
+    return addUpvalue(compiler, (uint8_t)local, true);
   }
 
   int upvalue = resolveUpvalue(compiler->enclosing, name);
@@ -808,4 +809,12 @@ ObjFunction *compile(const char *source) {
   }
   ObjFunction *function = endCompiler();
   return parser.hadError ? NULL : function;
+}
+
+void markCompilerRoots() {
+  Compiler *compiler = current;
+  while (compiler != NULL) {
+    markObject((Obj *)compiler->function);
+    compiler = compiler->enclosing;
+  }
 }
