@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "compiler.h"
 #include "memory.h"
 #include "object.h"
 #include "vm.h"
@@ -65,6 +66,15 @@ static void freeObject(Obj *object) {
     FREE(ObjUpvalue, object);
     break;
   }
+  case OBJ_CLASS:
+    FREE(ObjClass, object);
+    break;
+  case OBJ_INSTANCE: {
+    ObjInstance *instance = (ObjInstance *)object;
+    freeTable(&instance->fields);
+    FREE(ObjInstance, object);
+    break;
+  }
   }
 }
 
@@ -108,12 +118,11 @@ void markValue(Value value) {
     markObject(AS_OBJ(value));
   }
 }
-static void markArray(ValueArray* array) {
+static void markArray(ValueArray *array) {
   for (int i = 0; i < array->count; i++) {
     markValue(array->values[i]);
   }
 }
-
 
 static void markRoots() {
   for (Value *slot = vm.stack; slot < vm.stackTop; slot++) {
