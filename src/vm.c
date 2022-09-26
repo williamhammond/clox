@@ -118,6 +118,11 @@ static bool callValue(Value callee, int argCount) {
     }
     case OBJ_FUNCTION:
       return call(AS_FUNCTION(callee), argCount);
+    case OBJ_CLASS: {
+      ObjClass *klass = AS_CLASS(callee);
+      vm.stackTop[-argCount - 1] = OBJ_VAL(newInstance(klass));
+      return true;
+    }
     default:
       break; // Non-callable object type.
     }
@@ -163,8 +168,8 @@ static bool isFalsey(Value value) {
 }
 
 static void concatenate() {
-  ObjString* b = AS_STRING(peek(0));
-  ObjString* a = AS_STRING(peek(1));
+  ObjString *b = AS_STRING(peek(0));
+  ObjString *a = AS_STRING(peek(1));
 
   int length = a->length + b->length;
   char *chars = ALLOCATE(char, length + 1);
@@ -381,6 +386,39 @@ static InterpretResult run() {
       vm.stackTop = frame->slots;
       push(result);
       frame = &vm.frames[vm.frameCount - 1];
+      break;
+    }
+    case OP_CLASS:
+      push(OBJ_VAL(newClass(READ_STRING())));
+      break;
+    case OP_GET_PROPERTY: {
+      if (!IS_INSTANCE(peek(0))) {
+        runtimeError("Only instances have properties.");
+        return INTERPRET_RUNTIME_ERROR;
+      }
+      ObjInstance *instance = AS_INSTANCE(peek(0));
+      ObjString *name = READ_STRING();
+
+      Value value;
+      if (tableGet(&instance->fields, name, &value)) {
+        pop(); // Instance.
+        push(value);
+        break;
+      } else {
+        runtimeError("Undefined property '%s'.", name->chars);
+        return INTERPRET_RUNTIME_ERROR;
+      }
+    }
+    case OP_SET_PROPERTY: {
+      if (!IS_INSTANCE(peek(1))) {
+        runtimeError("Only instances have fields.");
+        return INTERPRET_RUNTIME_ERROR;
+      }
+      ObjInstance *instance = AS_INSTANCE(peek(1));
+      tableSet(&instance->fields, READ_STRING(), peek(0));
+      Value value = pop();
+      pop();
+      push(value);
       break;
     }
     }
