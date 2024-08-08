@@ -35,7 +35,7 @@ static inline Value numToValue(double num) {
 }
 
 #define AS_NUMBER(value) valueToNum(value)
-#define AS_OBJ(value) ((Obj*)(uintptr_t)((value) & ~(SIGN_BIT | QNAN)
+#define AS_OBJ(value) ((Obj*)(uintptr_t)((value) & ~(SIGN_BIT | QNAN)))
 #define AS_BOOL(value) ((value) == TRUE_VAL)
 static inline double valueToNum(Value value) {
   double num;
