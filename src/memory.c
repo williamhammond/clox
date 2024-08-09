@@ -146,7 +146,7 @@ static void markRoots() {
 
   markCompilerRoots();
   markTable(&vm.globals);
-  markObject((Obj*)vm.initString);
+  markObject((Obj *)vm.initString);
 }
 
 static void blackenObject(Obj *object) {
@@ -202,6 +202,7 @@ static void traceReferences() {
     blackenObject(object);
   }
 }
+
 static void sweep() {
   Obj *previous = NULL;
   Obj *object = vm.objects;

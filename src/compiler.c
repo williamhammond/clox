@@ -888,7 +888,7 @@ static void dot(bool canAssign) {
     expression();
     emitBytes(OP_SET_PROPERTY, name);
   } else if (match(TOKEN_LEFT_PAREN)) {
-    uint8_t argCount = argumentList;
+    uint8_t argCount = argumentList();
     emitBytes(OP_INVOKE, name);
     emitByte(argCount);
   } else {

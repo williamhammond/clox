@@ -26,7 +26,7 @@ typedef struct {
   Table globals;
   Table strings;
   ObjUpvalue *openUpvalues;
-  ObjString* initString;
+  ObjString *initString;
 
   size_t bytesAllocated;
   size_t nextGC;
@@ -47,7 +47,6 @@ extern VM vm;
 
 void initVM();
 void freeVM();
-static InterpretResult run();
 InterpretResult interpret(const char *source);
 void push(Value value);
 Value pop();
