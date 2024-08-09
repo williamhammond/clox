@@ -61,8 +61,6 @@ static void freeObject(Obj *object) {
     FREE(ObjClosure, object);
     break;
   case OBJ_UPVALUE: {
-    ObjClosure *closure = (ObjClosure *)object;
-    FREE_ARRAY(ObjUpvalue *, closure->upvalues, closure->upvalueCount);
     FREE(ObjUpvalue, object);
     break;
   }
@@ -87,13 +85,13 @@ static void freeObject(Obj *object) {
 void freeObjects() {
   Obj *object = vm.objects;
   while (object != NULL) {
-    ObjString *string = (ObjString *)object;
-    FREE_ARRAY(char, string->chars, string->length + 1);
-    FREE(ObjString, object);
-    break;
+    Obj* next = object->next;
+    freeObject(object);
+    object = next;
   }
   free(vm.grayStack);
 }
+
 void markObject(Obj *object) {
   if (object == NULL) {
     return;
