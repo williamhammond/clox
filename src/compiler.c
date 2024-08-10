@@ -461,7 +461,7 @@ static void varDeclaration() {
 static void expressionStatement() {
   expression();
   consume(TOKEN_SEMICOLON, "Expected ';' after expression");
-  emitByte(OP_PRINT);
+  emitByte(OP_POP);
 }
 
 static void forStatement() {
