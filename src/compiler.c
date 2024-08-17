@@ -723,12 +723,12 @@ static void classDeclaration() {
     emitByte(OP_INHERIT);
     classCompiler.hasSuperClass = true;
   }
+  namedVariable(className, false);
+  consume(TOKEN_LEFT_BRACE, "Expect '{' before class body.");
 
   while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
     method();
   }
-  namedVariable(className, false);
-  consume(TOKEN_LEFT_BRACE, "Expect '{' before class body.");
   consume(TOKEN_RIGHT_BRACE, "Expect '}' after class body.");
   emitByte(OP_POP);
 
